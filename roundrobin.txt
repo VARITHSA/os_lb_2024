@@ -1,0 +1,64 @@
+#include <stdio.h>
+
+void roundRobinScheduling(int n, int bt[], int time_quantum, int at[]) {
+    int remaining_time[n], wt[n], tat[n], ct[n];
+    float total_wt = 0, total_tat = 0;
+
+    // Initialize remaining time and completion time
+    for (int i = 0; i < n; i++) {
+        remaining_time[i] = bt[i];
+        ct[i] = 0;
+    }
+
+    int time = 0, completed = 0;
+    while (completed < n) {
+        for (int i = 0; i < n; i++) {
+            if (remaining_time[i] > 0 && at[i] <= time) {
+                if (remaining_time[i] > time_quantum) {
+                    time += time_quantum;
+                    remaining_time[i] -= time_quantum;
+                } else {
+                    time += remaining_time[i];
+                    remaining_time[i] = 0;
+                    ct[i] = time;
+                    completed++;
+                }
+            }
+        }
+    }
+
+    // Calculate waiting time and turnaround time
+    for (int i = 0; i < n; i++) {
+        tat[i] = ct[i] - at[i];
+        wt[i] = tat[i] - bt[i];
+        total_wt += wt[i];
+        total_tat += tat[i];
+    }
+
+    printf("Process\tBurst Time\tArrival Time\tCompletion Time\tWaiting Time\tTurnaround Time\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d\t%d\t\t%d\t\t%d\t\t%d\t\t%d\n", i + 1, bt[i], at[i], ct[i], wt[i], tat[i]);
+    }
+
+    printf("Average Waiting Time: %.2f\n", total_wt / n);
+    printf("Average Turnaround Time: %.2f\n", total_tat / n);
+}
+
+int main() {
+    int n, time_quantum;
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+    printf("Enter the time quantum: ");
+    scanf("%d", &time_quantum);
+
+    int burst_time[n], arrival_time[n];
+    printf("Enter the burst times and arrival times of the processes:\n");
+    for (int i = 0; i < n; i++) {
+        printf("Process %d: ", i + 1);
+        scanf("%d %d", &burst_time[i], &arrival_time[i]);
+    }
+
+    roundRobinScheduling(n, burst_time, time_quantum, arrival_time);
+
+    return 0;
+}
