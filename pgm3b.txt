@@ -1,0 +1,32 @@
+#include<stdio.h>
+#include<pthread.h>
+#include<stdlib.h>
+
+void *sum(void *arg){
+    int *marks = (int*) arg;
+    int sum = 0;
+    for (int i=0; i<5; i++){
+        sum = sum+ *(marks+i);
+    }
+    return (void*) sum;
+}
+
+int main(){
+    int stud1[5] = {9,3,4,4,2};
+    int stud2[5] = {10,2,7,9,1};
+    int result[2];
+    pthread_t tid1, tid2;
+    pthread_create(&tid1,NULL,sum,stud1);
+    pthread_join(tid1,(void *)&result[0]);
+    pthread_create(&tid2,NULL,sum,stud2);
+    pthread_join(tid2,(void *)$result[1]);
+
+    if(result[0]>result[1]){
+        printf("Student1 highest score: %d\n",result[0]);
+    }
+    else if(result[0]<result[1]){
+        printf("Student2 scores highest: %d\n",result[1]);
+    }
+    pthread_exit(NULL);
+    return 0;
+}

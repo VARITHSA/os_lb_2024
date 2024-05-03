@@ -1,0 +1,21 @@
+#include<stdio.h>
+#include<pthread.h>
+#include<stdlib.h>
+
+void *display(void *arg){
+    int number = (int)arg;
+    printf("\n Thread- %d | Hello World\n",number);
+}
+int main(){
+    int retcode;
+    pthread_t thread[3];
+    for(int i=0;i<3;i++){
+        retcode = pthread_create(&threads[i],NULL,display,i+1);
+        if(retcode){
+            printf("error creating thread !!");
+            exit(-1);
+        }
+    }
+    pthread_exit(NULL);
+    return 0;
+}
